@@ -1,0 +1,17 @@
+#!/usr/bin/env Rscript
+## install required R packages, for ewas_saliva
+# installing TCA package for cell-specific analysis
+install.packages(c("nloptr","TCA"), repos='http://cran.us.r-project.org')
+# installing cate and leapp
+# install this packages after the previous package
+install.packages(c("cate", "leapp"), repos='http://cran.us.r-project.org')
+# install library to parse parameters to functions
+install.packages(c("optparse"), repos='http://cran.us.r-project.org')
+# install episcore from devtools
+library(devtools)
+devtools::install_github("immunogenomics/presto")
+devtools::install_github("aet21/EpiSCORE")
+# install ewas tools
+devtools::install_github("hhhh5/ewastools")
+# install meffil
+install_github("perishky/meffil")
