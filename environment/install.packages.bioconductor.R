@@ -18,5 +18,8 @@ BiocManager::install(c(
 			"sva",
 			"AnnotationDb",
 			"org.Hs.eg.db",
-			"ENmix"),
+			"ENmix",
+			"variancePartition",
+			"edgeR",
+			"BiocParallel"),
 			update = TRUE, ask = FALSE)
