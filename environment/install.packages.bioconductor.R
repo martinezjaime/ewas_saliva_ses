@@ -16,7 +16,7 @@ BiocManager::install(c(
 			"EpiDISH",
 			"bacon",
 			"sva",
-			"AnnotationDb",
+			"AnnotationDbi",
 			"org.Hs.eg.db",
 			"ENmix",
 			"variancePartition",
