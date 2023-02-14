@@ -21,5 +21,9 @@ BiocManager::install(c(
 			"ENmix",
 			"variancePartition",
 			"edgeR",
+			"IlluminaHumanMethylationEPICanno.ilm10b2.hg19",
 			"BiocParallel"),
 			update = TRUE, ask = FALSE)
+# this part of the code is needed because of problems with the dependencies between minfi and meffil
+# suggestion added by https://github.com/SheTiemi
+BiocManager::install("preprocessCore", configure.args="--disable-threading",force=TRUE)
