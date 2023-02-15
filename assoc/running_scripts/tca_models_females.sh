@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=running_tca_models_ewas_saliva_ses
 #SBATCH --out="slurm-%j.out"
-#SBATCH --time=04:00:00
+#SBATCH --time=23:00:00
 #SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1
 #SBATCH --mem-per-cpu=32G
 #SBATCH --mail-type=ALL
