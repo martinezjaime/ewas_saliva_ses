@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=running_mixed_glint_models_ewas_saliva_ses
 #SBATCH --out="slurm-%j.out"
-#SBATCH --time=23:00:00
+#SBATCH --time=7-0
 #SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1
 #SBATCH --mem-per-cpu=32G
 #SBATCH --mail-type=ALL
-#SBATCH --partition=day
+#SBATCH --partition=week
 ####################################################################################
 # script for running the mixed using glint for saliva SES in children
 # day: 15 february 2023
