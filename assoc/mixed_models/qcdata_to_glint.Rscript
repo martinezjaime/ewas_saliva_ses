@@ -1,0 +1,151 @@
+#!/usr/bin/env Rscript --vanilla --slave
+##################################################################################################
+#!/usr/bin/env Rscript --vanilla --slave
+##################################################################################################
+# Rscript to generate input files for glint, using the qc'ed file 
+# day: 15 February 2023
+# author: Jose Jaime Martinez-Magana
+####################################################################################
+# This script uses three inputs the qcdata following this github https://github.com/martinezjaime/ewas_saliva_ses/blob/main/qc_data/probe_and_sample_quality_control.ipynb,
+# a list of samples to be included in the analysis as csv file
+# the path for the results of the epistructure following this github: https://github.com/martinezjaime/ewas_saliva_ses/blob/main/epigenetic_ancestry/epigenetic_ancestry.ipynb
+
+# this script will output two 
+
+library(optparse) 
+option_list=list(
+    make_option(c("--file"),
+                type="character",
+                default=NULL,
+                help="path to *rds object with qc information", metavar="character"),
+    make_option(c("--out"),
+                type="character",
+                default="out.rds",
+                help="output file name for rds [default= %default]", metavar="character"),
+    make_option(c("--outname"),
+                type="character",
+                default=NULL,
+                help="name of the rds file after performing this analysis", metavar="character"),
+    make_option(c("--samplelist"),
+                type="character",
+                default=NULL,
+                help="path to a *csv file with a list of samples to subset the analysis. This script uses a file with SampleID with Array_Sentrix structures and a header with SampleID", metavar="character"),
+    make_option(c("--pheno"),
+                type="character",
+                default=NULL,
+                help="name of the column identifying phenotype to be tested in the regression model", metavar="character"),
+    make_option(c("--covar"),
+                type="character",
+                default=NULL,
+                help="list of covariates to be included in the analysis from the phenofile separeted by ','", metavar="character")
+);
+
+opt_parser=OptionParser(option_list=option_list);
+opt=parse_args(opt_parser);
+
+if (is.null(opt$file)){
+  print_help(opt_parser)
+  stop("At least one argument must be supplied (input file)", call.=FALSE)
+}
+
+########################################################################################################################
+# load minfi for package compatibility
+library(minfi)
+
+# loading rds
+paste0("Start analysis of data:",Sys.time(),"---","###Analysis path[",opt$file,"]###")
+file=readRDS(opt$file)
+# setting output file
+outfile=paste0(opt$out,opt$outname,sep="")
+paste0("Input files for glint will be saved to:",Sys.time(),"---","###Output path[",outfile,"_*]###")
+
+# loading phenotype file
+paste0("Loading pheno file:",Sys.time())
+# add pheno to be tested
+pheno=opt$pheno
+# add covariates to be tested
+covar=unlist(strsplit(opt$covar,','))
+# get covars from pheno file
+covars=c(pheno,covar)
+covars=c(pheno,covar,"SampleID")
+# select covars from phenofile
+pheno_data=file$pheno[,colnames(file$pheno) %in% covars]
+# add SampleID as rownames
+rownames(pheno_data)=pheno_data$SampleID
+# remove SampleID column
+pheno_data$SampleID=NULL
+
+# get cells
+paste0("Adding cells to pheno file:",Sys.time())
+cells=file$cell_epidish
+# transform cells to data frame
+cells2=as.data.frame(cells)
+# remove unneccesary object
+rm(cells)
+# removing cells with cero numbers in all samples
+cells3=cells2[,colSums(cells2) > 0.00]
+paste0("Warning: This script merges CD4T + CD8T cells to Limphocytes imputed with EpiDISH from saliva, please revised the cell distribution in your data")
+# merging CD4T and CD8T cells
+cells3_m=cells3[,"CD4T", drop = F] + cells3[,"CD8T", drop = F]
+colnames(cells3_m)="Lympho"
+cells3_m2=cbind(cells3_m, cells3[,c("Epi","Fib","B","NK","Mono","Neutro")])
+# add warning to say the user the cells that will be used in the analysis
+paste0("Using the following cells in the regression models:",colnames(cells3_m2))
+# merge pheno_data with cells
+pheno_data=cbind(pheno_data,cells3_m2)
+
+# subset samples if sample list is added
+# subset phenofile
+# here we used is.null, to ask if there was a sample list added to the script
+if(!is.null(opt$samplelist)){
+    paste0("Sample filter added, phenofile will be filtered based in:",opt$samplelist,"---",Sys.time())
+    sample_f=read.csv(opt$samplelist)
+    # subsetting pheno file
+    pheno_data=pheno_data[rownames(pheno_data) %in% sample_f$SampleID,]
+} else {
+    pheno_data=pheno_data
+}
+
+# subset beta matrix
+if(!is.null(opt$samplelist)){
+    paste0("Sample filter added, beta matrix will be filtered based in:",opt$samplelist,"---",Sys.time())
+    sample_f=read.csv(opt$samplelist)
+    bvalues=file$rgsetraw_bmiq
+    bvalues=bvalues[,colnames(bvalues) %in% sample_f$SampleID]
+} else {
+    bvalues=file$rgsetraw_bmiq
+}
+
+# sample sanity check
+all_samples=is.null(pheno_data[!rownames(pheno_data) %in% colnames(bvalues),])
+if(all_samples == TRUE){
+    paste0("All samples in the phenofile found in the beta value matrix")
+    bvalues=bvalues
+} else {
+    missing_samples=rownames(pheno_data[!rownames(pheno_data) %in% colnames(bvalues),])
+    pheno_data=pheno_data[!rownames(pheno_data) %in% missing_samples,]
+    bvalues=bvalues[, colnames(bvalues) %in% rownames(pheno_data)]
+    paste0("The following samples were not found in the beta values but found in the pheno file: ", missing_samples)
+}
+
+# ordering pheno file based on beta
+paste0("Warning: this script orders the pheno file based on the beta matrix:", Sys.time())
+pheno_data=pheno_data[match(rownames(pheno_data),colnames(bvalues)),]
+
+# saving the txt beta matrices for glint
+# making object for naming beta matrix
+betaout=paste0(outfile,"_datafile_beta.txt",sep="")
+paste0("Start writting beta matrix", Sys.time())
+write.table(bvalues, file=betaout, quote=FALSE, sep="\t")
+
+# saving phenofile for glint
+# making object for output name of the pheno file
+phenoout=paste0(outfile,"_datafile_pheno.txt",sep="")
+paste0("Start writting phenofile: ", Sys.time())
+write.table(pheno_data[opt$pheno], file=phenoout, quote=FALSE, sep="\t")
+
+# saving covar for glint
+# making object for output name of the covar file
+covarout=paste0(outfile,"_datafile_covar.txt",sep="")
+paste0("Start writting covarfile: ", Sys.time())
+write.table(pheno_data[!colnames(pheno_data) %in% opt$pheno], file=covarout, quote=FALSE, sep="\t")
