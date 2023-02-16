@@ -241,7 +241,7 @@ paste0("Testing: ", opt$pheno, " as phenotype")
 paste0("Using the following phenotypes and covariates: ", colnames(pheno_data))
 # extracting colnames for building the contrast matrix
 xnam=paste(colnames(pheno_data), sep="")
-fmla=as.formula(paste(" ~ 0 + ", paste(xnam, collapse= "+")))
+fmla=as.formula(paste(" ~ ", paste(xnam, collapse= "+")))
 # design contrast matrix
 design=model.matrix(fmla, data=pheno_data)
 # fitting model
@@ -262,7 +262,7 @@ out$lmfit_top_noarray=fit_bay_top
 out$missing_samples=missing_samples
 
 ####################################################################################
-# using limma to run linear models in your phenotype without array and slide as covariates
+# using limma to run linear models in your phenotype with array and slide as covariates
 paste0("Testing: ", opt$pheno, " as phenotype")
 # adding slide and array as covariates
 slide=strsplit(rownames(pheno_data), "_") %>% sapply(extract2, 1)
@@ -279,7 +279,7 @@ paste0("Adding slide and array as covariates. Using the following phenotypes and
 
 # extracting colnames for building the contrast matrix
 xnam_a=paste(colnames(pheno_data_a), sep="")
-fmla_a=as.formula(paste(" ~ 0 + ", paste(xnam_a, collapse= "+")))
+fmla_a=as.formula(paste(" ~ ", paste(xnam_a, collapse= "+")))
 # design contrast matrix
 design_a=model.matrix(fmla_a, data=pheno_data_a)
 # fitting model
