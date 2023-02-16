@@ -10,8 +10,6 @@
 # a list of samples to be included in the analysis as csv file
 # the path for the results of the epistructure following this github: https://github.com/martinezjaime/ewas_saliva_ses/blob/main/epigenetic_ancestry/epigenetic_ancestry.ipynb
 
-# this script will output two 
-
 library(optparse) 
 option_list=list(
     make_option(c("--file"),
