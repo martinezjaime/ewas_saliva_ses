@@ -12,6 +12,11 @@
 # analyzer: Jose Jaime Martinez-Magana
 # cluster: Grace - HPC Yale
 ####################################################################################
+# load environment, only needed if miniconda not loaded
+module load miniconda
+# activate environment for glint
+conda activate glint
+
 # set glint path
 glint_path="/gpfs/gibbs/project/montalvo-ortiz/jjm262/programs/glint/glint.py"
 # input data path, set the same path of the output for the qcdata_to_glint.Rscript
