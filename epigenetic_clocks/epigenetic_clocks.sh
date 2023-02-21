@@ -18,7 +18,7 @@
 # load miniconda
 module load miniconda
 # activate environment
-conda activate ewas_saliva
+conda activate epigenetic_clocks
 # path to Rscript
 # this path should be change based on datapaths
 Rscript="/vast/palmer/scratch/montalvo-ortiz/jjm262/epigenomics/ewas_saliva_ses/script/epigenetic_age/epigenetic_clock.Rscript"
