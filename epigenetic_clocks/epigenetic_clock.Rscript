@@ -7,7 +7,6 @@
 
 # This script uses three inputs the qcdata following this github https://github.com/martinezjaime/ewas_saliva_ses/blob/main/qc_data/probe_and_sample_quality_control.ipynb,
 # a list of samples to be included in the analysis as csv file
-# the path for the results of the epistructure following this github: https://github.com/martinezjaime/ewas_saliva_ses/blob/main/epigenetic_ancestry/epigenetic_ancestry.ipynb
 
 ####################################################################################
 # set parameters
