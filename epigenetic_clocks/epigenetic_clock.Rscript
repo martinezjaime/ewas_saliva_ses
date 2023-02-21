@@ -29,7 +29,7 @@ option_list=list(
     make_option(c("--covar"),
                 type="character",
                 default=NULL,
-                help="add the columns names for age and sex from the phenofile separated by ','", metavar="character")
+                help="add the columns names for age and sex from the phenofile separated by ','", metavar="character"),
     make_option(c("--outname"),
                 type="character",
                 default=NULL,
