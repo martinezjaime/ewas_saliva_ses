@@ -154,9 +154,9 @@ for (i in 1:length(clocks)) {
   print(paste0("Processing clock: ",clocks[[i]]))
   mage=methyAge(bvalues, clock=clocks[[i]], age_info=pheno_data, do_plot=TRUE)
   out[[i]]=mage
-  names(out[[i]])=c("SampleID",paste0("dnamage_",clocks[[i]],sep=""))
+  # names(out[[i]])=c("SampleID",paste0("dnamage_",clocks[[i]],sep=""))
 }
-
+# bug fixed, the names command remove the colnames of the dataframe
 out$pheno_data=pheno_data
 
 # saving output
