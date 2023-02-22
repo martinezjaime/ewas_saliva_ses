@@ -157,6 +157,11 @@ for (i in 1:length(clocks)) {
   # names(out[[i]])=c("SampleID",paste0("dnamage_",clocks[[i]],sep=""))
 }
 # bug fixed, the names command remove the colnames of the dataframe
+
+# adding clocks to output
+out$clocks=clocks
+
+# adding phenodata to output
 out$pheno_data=pheno_data
 
 # saving output
