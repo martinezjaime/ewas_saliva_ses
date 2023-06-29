@@ -7,6 +7,8 @@ install.packages(c("nloptr","TCA"), repos='http://cran.us.r-project.org')
 install.packages(c("cate", "leapp"), repos='http://cran.us.r-project.org')
 # install library to parse parameters to functions
 install.packages(c("optparse"), repos='http://cran.us.r-project.org')
+# install library to calculate variance inflation factor
+install.packages(c("cars"), repos='http://cran.us.r-project.org')
 # install episcore from devtools
 library(devtools)
 devtools::install_github("immunogenomics/presto")
