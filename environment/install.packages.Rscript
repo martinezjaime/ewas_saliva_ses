@@ -9,6 +9,8 @@ install.packages(c("cate", "leapp"), repos='http://cran.us.r-project.org')
 install.packages(c("optparse"), repos='http://cran.us.r-project.org')
 # install library to calculate variance inflation factor
 install.packages(c("car"), repos='http://cran.us.r-project.org')
+# install library for mediation analysis
+install.packages(c("mediation"), repos='http://cran.us.r-project.org')
 # install episcore from devtools
 library(devtools)
 devtools::install_github("immunogenomics/presto")
